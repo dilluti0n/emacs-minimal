@@ -27,6 +27,7 @@
 			       (python-mode . python-ts-mode)))
 
 ;; cc-mode c-ts-mode c++-ts-mode
+(indent-tabs-mode t)
 (setq c-basic-offset tab-width
       c-default-sytle '((awk-mode . "awk")
 			(other . "linux"))
@@ -47,7 +48,7 @@
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-minimum-prefix-length 2
-      company-idle-delay (lambda () (if (company-in-string-or-comment) nil 0)))
+      company-idle-delay (lambda () (if (company-in-string-or-comment) nil 0.1)))
 
 (require 'eglot)
 (add-hook 'cc-mode-hook 'eglot-ensure)
@@ -73,6 +74,9 @@
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
+(require 'undo-tree)
+(global-undo-tree-mode)
 
 ;; custom.el
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
