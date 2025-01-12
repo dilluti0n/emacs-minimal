@@ -12,7 +12,7 @@
 
 ;; font
 (set-frame-font "Monaco-14" nil t)
-
+(setq tab-width 8)
 
 ;; default hooks
 (add-hook 'prog-mode-hook
@@ -22,14 +22,16 @@
 ;; tree-sitter
 (setq major-mode-remap-alist '((c-mode . c-ts-mode)
 			       (c++-mode . c++-ts-mode)
+			       (c-or-c++-mode . c-or-c++-ts-mode)
 			       (shell-script-mode . bash-ts-mode)
 			       (python-mode . python-ts-mode)))
 
-;; cc-mode
-(setq tab-width 8
-      c-basic-offset 8
+;; cc-mode c-ts-mode c++-ts-mode
+(setq c-basic-offset tab-width
       c-default-sytle '((awk-mode . "awk")
-			(other . "linux")))
+			(other . "linux"))
+      c-ts-mode-indent-style "linux"
+      c-ts-mode-indent-offset c-basic-offset)
 
 (add-hook 'c-mode-hook
 	  (lambda () (subword-mode 1)))
@@ -49,6 +51,9 @@
 
 (require 'eglot)
 (add-hook 'cc-mode-hook 'eglot-ensure)
+(add-hook 'c-ts-mode-hook 'eglot-ensure)
+(add-hook 'c++-ts-mode-hook 'eglot-ensure)
+(add-hook 'python-base-mode-hook 'eglot-ensure)
 (add-to-list 'eglot-server-programs
 	     '((c-ts-mode c++-ts-mode cc-mode)
 	       . ("clangd"
