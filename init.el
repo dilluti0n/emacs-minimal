@@ -31,7 +31,7 @@
 (setq c-basic-offset tab-width
       c-default-sytle '((awk-mode . "awk")
 			(other . "linux"))
-      c-ts-mode-indent-style "linux"
+      c-ts-mode-indent-style 'linux
       c-ts-mode-indent-offset c-basic-offset)
 
 (add-hook 'c-mode-hook
@@ -47,25 +47,14 @@
 (require 'magit)
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
-(setq company-minimum-prefix-length 2
-      company-idle-delay (lambda () (if (company-in-string-or-comment) nil 0.1)))
+(setq company-minimum-prefix-length 1
+      company-idle-delay (lambda () (if (company-in-string-or-comment) nil 0)))
 
 (require 'eglot)
 (add-hook 'cc-mode-hook 'eglot-ensure)
 (add-hook 'c-ts-mode-hook 'eglot-ensure)
 (add-hook 'c++-ts-mode-hook 'eglot-ensure)
 (add-hook 'python-base-mode-hook 'eglot-ensure)
-(add-to-list 'eglot-server-programs
-	     '((c-ts-mode c++-ts-mode cc-mode)
-	       . ("clangd"
-		  "-j=4"
-		  "--log=error"
-		  "--malloc-trim"
-		  "--background-index"
-		  "--clang-tidy"
-		  "--compiletion=style=detailed"
-		  "--pch-storage=memory"
-		  "--header-insertion=never")))
 
 (require 'eat)
 (require 'smex)
@@ -77,6 +66,7 @@
 
 (require 'undo-tree)
 (global-undo-tree-mode)
+(setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo"))))
 
 ;; custom.el
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
