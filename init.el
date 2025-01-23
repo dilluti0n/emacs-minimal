@@ -103,6 +103,9 @@
 (global-set-key (kbd "C-;") 'avy-goto-char-timer)
 (global-set-key (kbd "C-'") 'avy-goto-line)
 
+(require 'which-key)
+(which-key-mode)
+
 ;; custom functions
 ;; alpha
 (setq-default m/default-alpha 90)
