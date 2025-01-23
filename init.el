@@ -127,5 +127,12 @@
 
 (global-set-key "\C-x\C-a" 'alpha-toggle)
 
+;; terminal
+(defun open-st-in-workdir ()
+  (interactive)
+  (call-process-shell-command
+   (concat "setsid st -e tmux new-session -c " (expand-file-name default-directory)) nil 0))
+(global-set-key (kbd "C-x c t") 'open-st-in-workdir)
+
 ;; custom.el
 (when (file-exists-p custom-file) (load custom-file))
