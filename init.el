@@ -8,18 +8,24 @@
 
 (menu-bar-mode 0)
 (tool-bar-mode 0)
-(scroll-bar-mode 1)
+(scroll-bar-mode 0)
 (ido-mode 1)
 (column-number-mode t)
+(recentf-mode 1)
+(save-place-mode 1)
+(setq history-length 25)
+(savehist-mode 1)
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t)
 
-;; font
-(set-frame-font "Monaco-14" nil t)
+;; tab is 8 spaces !!!!
 (setq tab-width 8)
 
 ;; default hooks
 (add-hook 'prog-mode-hook
 	  (lambda () (progn (display-line-numbers-mode t)
-			    (local-set-key (kbd "C-x c c") 'compile))))
+			    (local-set-key (kbd "C-x c c") 'compile)
+			    (local-set-key (kbd "C-x c r") 'recompile))))
 
 ;; tree-sitter
 (setq major-mode-remap-alist '((c-mode . c-ts-mode)
