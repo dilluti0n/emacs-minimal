@@ -69,7 +69,7 @@
 (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
 (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)
 
-(require 'eat)
+(require 'vterm)
 (require 'smex)
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
