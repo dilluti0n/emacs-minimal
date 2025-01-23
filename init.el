@@ -96,10 +96,17 @@
 	      (kill-buffer tex-render-output-buffer))
 	  (find-file-other-window tex-render-output-name)))))
 
+(require 'avy)
+(avy-setup-default)
+(global-set-key (kbd "C-c C-j") 'avy-resume)
+(setq avy-timeout-seconds 0.3)
+(global-set-key (kbd "C-;") 'avy-goto-char-timer)
+(global-set-key (kbd "C-'") 'avy-goto-line)
+
 ;; custom functions
 ;; alpha
 (setq-default m/default-alpha 90)
-(add-to-list 'default-frame-alist `(alpha-background . ,m/default-alpha))
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 (defun alpha-set (value)
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
