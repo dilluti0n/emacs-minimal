@@ -1,3 +1,5 @@
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
 (setq inhibit-startup-screen t
       vc-follow-symlinks t
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
@@ -68,6 +70,41 @@
 (global-undo-tree-mode)
 (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo"))))
 
+;; tex-mode
+(defun tex-render ()
+  (interactive)
+    (progn
+      (tex-buffer)
+      (print tex-directory)
+      (print tex-zap-file)
+      (let* ((tex-render-output-name (expand-file-name (concat tex-zap-file ".dvi") tex-directory))
+	     (tex-render-output-buffer (get-file-buffer tex-render-output-name)))
+	(progn
+	  (print tex-render-output-name)
+	  (if tex-render-output-buffer
+	      (kill-buffer tex-render-output-buffer))
+	  (find-file-other-window tex-render-output-name)))))
+
+;; custom functions
+;; alpha
+(setq-default m/default-alpha 90)
+(add-to-list 'default-frame-alist `(alpha-background . ,m/default-alpha))
+
+(defun alpha-set (value)
+  "Sets the transparency of the frame window. 0=transparent/100=opaque"
+  (interactive "nvalue: ")
+  (set-frame-parameter nil 'alpha-background value))
+
+(defun alpha-toggle ()
+  "Toggles the transparency between opaque and current value"
+  (interactive)
+  (if (= (frame-parameter nil 'alpha-background) 100)
+      (alpha-set m/default-alpha)
+    (progn
+      (setq m/default-alpha (frame-parameter nil 'alpha-background))
+      (alpha-set 100))))
+
+(global-set-key "\C-x\C-a" 'alpha-toggle)
+
 ;; custom.el
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file) (load custom-file))
