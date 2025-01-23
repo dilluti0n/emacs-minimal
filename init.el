@@ -63,6 +63,11 @@
 (add-hook 'c-ts-mode-hook 'eglot-ensure)
 (add-hook 'c++-ts-mode-hook 'eglot-ensure)
 (add-hook 'python-base-mode-hook 'eglot-ensure)
+(define-key eglot-mode-map (kbd "C-c r") 'eglot-rename)
+(define-key eglot-mode-map (kbd "C-c o") 'eglot-code-action-organize-imports)
+(define-key eglot-mode-map (kbd "C-c h") 'eldoc)
+(define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+(define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)
 
 (require 'eat)
 (require 'smex)
