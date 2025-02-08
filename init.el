@@ -106,6 +106,9 @@
 (require 'which-key)
 (which-key-mode)
 
+(require 'gptel)
+(setq gptel-api-key (getenv "OPENAI_API_KEY"))
+
 ;; custom functions
 ;; alpha
 (setq-default m/default-alpha 90)
@@ -135,4 +138,4 @@
 (global-set-key (kbd "C-x c t") 'open-st-in-workdir)
 
 ;; custom.el
-(when (file-exists-p custom-file) (load custom-file))
+(load-if-exists custom-file)
