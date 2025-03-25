@@ -137,5 +137,14 @@
    (concat "setsid st -e tmux new-session -c " (expand-file-name default-directory)) nil 0))
 (global-set-key (kbd "C-x c t") 'open-st-in-workdir)
 
+;; copy pwd to kill ring
+(defun copy-pwd-to-kill-ring ()
+  "Copy the current buffer's default directory (PWD) to the kill ring."
+  (interactive)
+  (let ((pwd (expand-file-name default-directory)))
+    (kill-new pwd)
+    (message "Copied PWD to kill ring: %s" pwd)))
+(global-set-key (kbd "C-x c p") 'copy-pwd-to-kill-ring)
+
 ;; custom.el
 (load-if-exists custom-file)
