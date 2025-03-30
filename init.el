@@ -56,7 +56,7 @@
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-minimum-prefix-length 1
-      company-idle-delay (lambda () (if (company-in-string-or-comment) nil 0)))
+      company-idle-delay (if (company-in-string-or-comment) nil 0))
 
 (require 'eglot)
 (add-hook 'cc-mode-hook 'eglot-ensure)
