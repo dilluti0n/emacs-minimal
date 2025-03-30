@@ -146,5 +146,8 @@
     (message "Copied PWD to kill ring: %s" pwd)))
 (global-set-key (kbd "C-x c p") 'copy-pwd-to-kill-ring)
 
+;; global keymaps
+(global-set-key (kbd "C-x c v") 'vterm-other-window)
+
 ;; custom.el
 (load-if-exists custom-file)
