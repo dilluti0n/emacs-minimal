@@ -81,26 +81,11 @@
 (global-undo-tree-mode)
 (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo"))))
 
-;; tex-mode
-(defun tex-render ()
-  (interactive)
-    (progn
-      (tex-buffer)
-      (print tex-directory)
-      (print tex-zap-file)
-      (let* ((tex-render-output-name (expand-file-name (concat tex-zap-file ".dvi") tex-directory))
-	     (tex-render-output-buffer (get-file-buffer tex-render-output-name)))
-	(progn
-	  (print tex-render-output-name)
-	  (if tex-render-output-buffer
-	      (kill-buffer tex-render-output-buffer))
-	  (find-file-other-window tex-render-output-name)))))
-
 (require 'avy)
 (avy-setup-default)
 (global-set-key (kbd "C-c C-j") 'avy-resume)
 (setq avy-timeout-seconds 0.3)
-(global-set-key (kbd "C-;") 'avy-goto-char-timer)
+(global-set-key (kbd "C-;") 'avy-goto-char-2)
 (global-set-key (kbd "C-'") 'avy-goto-line)
 
 (require 'which-key)
@@ -155,6 +140,21 @@
     (kill-new pwd)
     (message "Copied PWD to kill ring: %s" pwd)))
 (global-set-key (kbd "C-x c p") 'copy-pwd-to-kill-ring)
+
+;; tex-mode
+(defun tex-render ()
+  (interactive)
+    (progn
+      (tex-buffer)
+      (print tex-directory)
+      (print tex-zap-file)
+      (let* ((tex-render-output-name (expand-file-name (concat tex-zap-file ".dvi") tex-directory))
+	     (tex-render-output-buffer (get-file-buffer tex-render-output-name)))
+	(progn
+	  (print tex-render-output-name)
+	  (if tex-render-output-buffer
+	      (kill-buffer tex-render-output-buffer))
+	  (find-file-other-window tex-render-output-name)))))
 
 ;; global keymaps
 (global-set-key (kbd "C-x c v") 'vterm-other-window)
