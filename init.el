@@ -109,6 +109,16 @@
 (require 'gptel)
 (setq gptel-api-key (getenv "OPENAI_API_KEY"))
 
+(require 'find-file-in-project)
+(setq ffip-prefer-ido-mode t)
+
+(require 'crux)
+
+(require 'rg)
+(rg-enable-default-bindings)
+
+;; end of package
+
 ;; custom functions
 ;; alpha
 (setq-default m/default-alpha 90)
