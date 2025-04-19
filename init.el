@@ -9,15 +9,11 @@
 (menu-bar-mode 0)
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
-;; (ido-mode 1)
 (column-number-mode t)
 (recentf-mode 1)
 (save-place-mode 1)
 (setq history-length 25)
 (savehist-mode 1)
-;; (global-auto-revert-mode 1)
-(setq global-auto-revert-non-file-buffers t)
-;; (add-to-list 'default-frame-alist '(font . "ComicMono Nerd Font-14"))
 (add-to-list 'default-frame-alist '(font . "Cascadia Code-13"))
 
 
@@ -79,12 +75,6 @@
 (setq eldoc-echo-area-use-multiline-p nil)
 
 (require 'vterm)
-;; (require 'smex)
-;; (smex-initialize)
-;; (global-set-key (kbd "M-x") 'smex)
-;; (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; ;; This is your old M-x.
-;; (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 (require 'vertico)
 (vertico-mode)
 ;; (setq enable-recursive-minibuffers t
@@ -134,9 +124,6 @@
 (require 'gptel)
 (setq gptel-api-key (getenv "OPENAI_API_KEY"))
 
-(require 'find-file-in-project)
-;; (setq ffip-prefer-ido-mode t)
-
 (require 'crux)
 
 (require 'rg)
@@ -153,9 +140,6 @@
 
 ;; (require 'swiper)
 ;; (global-set-key (kbd "C-s") 'swiper)
-
-;; (require 'gcmh)
-;; (gcmh-mode 1)
 
 ;; end of package
 
