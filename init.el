@@ -17,7 +17,9 @@
 (savehist-mode 1)
 ;; (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t)
-(add-to-list 'default-frame-alist '(font . "ComicMono Nerd Font-14"))
+;; (add-to-list 'default-frame-alist '(font . "ComicMono Nerd Font-14"))
+(add-to-list 'default-frame-alist '(font . "Cascadia Code-13"))
+
 
 ;; tab is 8 spaces !!!!
 (setq tab-width 8)
@@ -88,11 +90,23 @@
 ;; (setq enable-recursive-minibuffers t
 ;;       read-extended-command-predicate #'command-completion-default-include-p
 ;;       minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
-;; (require 'orderless)
+(require 'orderless)
 (setq completion-styles '(orderless basic)
       completion-category-defaults nil
       completion-category-overrides '((file (styles partial-completion))))
 (vertico-flat-mode)
+;; todo
+(define-key vertico-flat-map (kbd "C-d") 'dired-at-point)
+(define-key vertico-flat-map (kbd "C-f") 'find-file-at-point)
+
+(require 'fussy)
+(fussy-setup)
+(fussy-company-setup)
+(fussy-eglot-setup)
+(add-to-list 'load-path (expand-file-name "elpa/fzf-native" user-emacs-directory))
+(require 'fzf-native)
+(setq fussy-score-fn 'fussy-fzf-native-score)
+(fzf-native-load-dyn)
 
 ;; Prompt indicator for `completing-read-multiple'.
 (when (< emacs-major-version 31)
