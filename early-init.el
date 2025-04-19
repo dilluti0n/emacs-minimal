@@ -8,5 +8,7 @@
   "load file if exists"
   (when (file-exists-p file-name) (load file-name)))
 
+(setq gc-cons-threshold 3500000)
+
 ;; sensitive keys
 (load-if-exists (expand-file-name "env.el" user-emacs-directory))

@@ -9,23 +9,25 @@
 (menu-bar-mode 0)
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
-(ido-mode 1)
+;; (ido-mode 1)
 (column-number-mode t)
 (recentf-mode 1)
 (save-place-mode 1)
 (setq history-length 25)
 (savehist-mode 1)
-(global-auto-revert-mode 1)
+;; (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t)
+(add-to-list 'default-frame-alist '(font . "ComicMono Nerd Font-14"))
 
 ;; tab is 8 spaces !!!!
 (setq tab-width 8)
 
 ;; default hooks
 (add-hook 'prog-mode-hook
-	  (lambda () (progn (display-line-numbers-mode t)
-			    (local-set-key (kbd "C-x c c") 'compile)
-			    (local-set-key (kbd "C-x c r") 'recompile))))
+	  (lambda () (progn (display-line-numbers-mode t))))
+
+(global-set-key (kbd "C-x c c") 'compile)
+(global-set-key (kbd "C-x c r") 'recompile)
 
 ;; tree-sitter
 (setq major-mode-remap-alist '((c-mode . c-ts-mode)
@@ -37,7 +39,7 @@
 ;; cc-mode c-ts-mode c++-ts-mode
 (indent-tabs-mode t)
 (setq c-basic-offset tab-width
-      c-default-sytle '((awk-mode . "awk")
+      c-default-style '((awk-mode . "awk")
 			(other . "linux"))
       c-ts-mode-indent-style 'linux
       c-ts-mode-indent-offset c-basic-offset)
@@ -56,7 +58,10 @@
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-minimum-prefix-length 1
-      company-idle-delay (if (company-in-string-or-comment) nil 0))
+      company-idle-delay (if (company-in-string-or-comment) nil 0)
+      company-show-numbers nil
+      company-tooltip-align-annotations nil
+      company-require-match 'never)
 
 (require 'eglot)
 (add-hook 'cc-mode-hook 'eglot-ensure)
@@ -68,14 +73,35 @@
 (define-key eglot-mode-map (kbd "C-c h") 'eldoc)
 (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
 (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)
+(define-key flymake-mode-map (kbd "C-x c b") 'flymake-show-diagnostics-buffer)
+(setq eldoc-echo-area-use-multiline-p nil)
 
 (require 'vterm)
-(require 'smex)
-(smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; This is your old M-x.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+;; (require 'smex)
+;; (smex-initialize)
+;; (global-set-key (kbd "M-x") 'smex)
+;; (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; ;; This is your old M-x.
+;; (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+(require 'vertico)
+(vertico-mode)
+;; (setq enable-recursive-minibuffers t
+;;       read-extended-command-predicate #'command-completion-default-include-p
+;;       minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
+;; (require 'orderless)
+(setq completion-styles '(orderless basic)
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles partial-completion))))
+(vertico-flat-mode)
+
+;; Prompt indicator for `completing-read-multiple'.
+(when (< emacs-major-version 31)
+  (advice-add #'completing-read-multiple :filter-args
+              (lambda (args)
+                (cons (format "[CRM%s] %s"
+                              (string-replace "[ \t]*" "" crm-separator)
+                              (car args))
+                      (cdr args)))))
 
 (require 'undo-tree)
 (global-undo-tree-mode)
@@ -85,7 +111,7 @@
 (avy-setup-default)
 (global-set-key (kbd "C-c C-j") 'avy-resume)
 (setq avy-timeout-seconds 0.3)
-(global-set-key (kbd "C-;") 'avy-goto-char-2)
+(global-set-key (kbd "C-;") 'avy-goto-char-timer)
 (global-set-key (kbd "C-'") 'avy-goto-line)
 
 (require 'which-key)
@@ -95,12 +121,27 @@
 (setq gptel-api-key (getenv "OPENAI_API_KEY"))
 
 (require 'find-file-in-project)
-(setq ffip-prefer-ido-mode t)
+;; (setq ffip-prefer-ido-mode t)
 
 (require 'crux)
 
 (require 'rg)
 (rg-enable-default-bindings)
+
+(require 'fzf)
+(setq fzf/args "-x --color bw --print-query"
+      fzf/executable "fzf"
+      fzf/git-grep-args "-i --line-number %s"
+      fzf/grep-command "rg --no-heading -nH"
+      fzf/position-bottom t
+      fzf/window-height 15)
+(global-set-key (kbd "C-s") 'fzf-find-in-buffer)
+
+;; (require 'swiper)
+;; (global-set-key (kbd "C-s") 'swiper)
+
+;; (require 'gcmh)
+;; (gcmh-mode 1)
 
 ;; end of package
 
@@ -155,6 +196,16 @@
 	  (if tex-render-output-buffer
 	      (kill-buffer tex-render-output-buffer))
 	  (find-file-other-window tex-render-output-name)))))
+
+(defun yank-file-contents-to-kill-ring (filename)
+  "Read contents of FILENAME and add to kill-ring."
+  (interactive "fFile to yank: ")
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (kill-new (buffer-string))
+    (message "File contents added to kill-ring.")))
+
+;; end of custom functions
 
 ;; global keymaps
 (global-set-key (kbd "C-x c v") 'vterm-other-window)
