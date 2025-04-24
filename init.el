@@ -1,3 +1,4 @@
+(profiler-start 'cpu)
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 (setq inhibit-startup-screen t
@@ -9,6 +10,7 @@
 (menu-bar-mode 0)
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
+(tab-bar-mode 0)
 (column-number-mode t)
 (recentf-mode 1)
 (save-place-mode 1)
@@ -28,22 +30,73 @@
 (global-set-key (kbd "C-x c r") 'recompile)
 
 ;; tree-sitter
-(setq major-mode-remap-alist '((c-mode . c-ts-mode)
-			       (c++-mode . c++-ts-mode)
-			       (c-or-c++-mode . c-or-c++-ts-mode)
-			       (shell-script-mode . bash-ts-mode)
-			       (python-mode . python-ts-mode)))
+(require 'treesit)
+(defun m/setup-install-grammars ()
+  (dolist (grammar
+           '((css . ("https://github.com/tree-sitter/tree-sitter-css" "v0.20.0"))
+             (bash "https://github.com/tree-sitter/tree-sitter-bash")
+             (html . ("https://github.com/tree-sitter/tree-sitter-html" "v0.20.1"))
+             (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.21.2" "src"))
+             (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
+             (python . ("https://github.com/tree-sitter/tree-sitter-python" "v0.20.4"))
+             (go "https://github.com/tree-sitter/tree-sitter-go" "v0.20.0")
+             (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+             (make "https://github.com/alemuller/tree-sitter-make")
+             (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+             (cmake "https://github.com/uyha/tree-sitter-cmake")
+             (c "https://github.com/tree-sitter/tree-sitter-c")
+             (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+             (toml "https://github.com/tree-sitter/tree-sitter-toml")
+             (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
+             (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
+             (yaml . ("https://github.com/ikatyang/tree-sitter-yaml" "v0.5.0"))
+             (prisma "https://github.com/victorhqc/tree-sitter-prisma")))
+    (add-to-list 'treesit-language-source-alist grammar)
+    ;; Only install `grammar' if we don't already have it
+    ;; installed. However, if you want to *update* a grammar then
+    ;; this obviously prevents that from happening.
+    (unless (treesit-language-available-p (car grammar))
+      (treesit-install-language-grammar (car grammar)))))
+(m/setup-install-grammars)
+
+(dolist (mapping
+	 '(("\\.tsx\\'" . tsx-ts-mode)
+	   ("\\.jsx\\'" . tsx-ts-mode)
+	   ("\\.ts\\'" . typescript-ts-mode)
+	   ("\\.js\\'" . typescript-ts-mode)
+	   ("\\.mjs\\'" . typescript-ts-mode)
+	   ("\\.mts\\'" . typescript-ts-mode)
+	   ("\\.cjs\\'" . typescript-ts-mode)
+	   ("\\.json\\'" . json-ts-mode)))
+  (add-to-list 'auto-mode-alist mapping))
+
+(dolist (mapping
+         '((python-mode . python-ts-mode)
+           (css-mode . css-ts-mode)
+           (typescript-mode . typescript-ts-mode)
+           (js-mode . typescript-ts-mode)
+           (js2-mode . typescript-ts-mode)
+           (c-mode . c-ts-mode)
+           (c++-mode . c++-ts-mode)
+           (c-or-c++-mode . c-or-c++-ts-mode)
+           (bash-mode . bash-ts-mode)
+           (css-mode . css-ts-mode)
+           (json-mode . json-ts-mode)
+           (js-json-mode . json-ts-mode)
+           (sh-mode . bash-ts-mode)
+           (sh-base-mode . bash-ts-mode)))
+  (add-to-list 'major-mode-remap-alist mapping))
 
 ;; cc-mode c-ts-mode c++-ts-mode
-(indent-tabs-mode t)
-(setq c-basic-offset tab-width
-      c-default-style '((awk-mode . "awk")
-			(other . "linux"))
-      c-ts-mode-indent-style 'linux
-      c-ts-mode-indent-offset c-basic-offset)
+(setq-default indent-tabs-mode t)
+(setq-default c-basic-offset tab-width
+	      c-default-style '((awk-mode . "awk")
+				(other . "linux"))
+	      c-ts-mode-indent-style 'linux)
+(setq-default c-ts-mode-indent-offset c-basic-offset)
 
-(add-hook 'c-mode-hook
-	  (lambda () (subword-mode 1)))
+(dolist (hook '(c-ts-mode-hook c++-ts-mode-hook))
+  (add-hook hook #'subword-mode))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -56,23 +109,37 @@
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-minimum-prefix-length 1
-      company-idle-delay (if (company-in-string-or-comment) nil 0)
+      company-idle-delay 0
       company-show-numbers nil
       company-tooltip-align-annotations nil
       company-require-match 'never)
 
 (require 'eglot)
-(add-hook 'cc-mode-hook 'eglot-ensure)
-(add-hook 'c-ts-mode-hook 'eglot-ensure)
-(add-hook 'c++-ts-mode-hook 'eglot-ensure)
+(dolist (hook '(cc-mode-hook
+		 c-ts-mode-hook
+		 c++-ts-mode-hook
+		 typescript-ts-mode-hook))
+  (add-hook hook 'eglot-ensure))
 (add-hook 'python-base-mode-hook 'eglot-ensure)
 (define-key eglot-mode-map (kbd "C-c r") 'eglot-rename)
 (define-key eglot-mode-map (kbd "C-c o") 'eglot-code-action-organize-imports)
 (define-key eglot-mode-map (kbd "C-c h") 'eldoc)
 (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
 (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)
-(define-key flymake-mode-map (kbd "C-x c b") 'flymake-show-diagnostics-buffer)
+(define-key flymake-mode-map (kbd "C-x c b") 'flymake-show-buffer-diagnostics)
+(setq eglot-events-buffer-config '(:size 0 :format full))
 (setq eldoc-echo-area-use-multiline-p nil)
+
+;; (require 'lsp-mode)
+;; (add-hook 'cc-mode-hook 'lsp)
+;; (add-hook 'c-ts-mode-hook 'lsp)
+;; (add-hook 'c++-ts-mode-hook 'lsp)
+;; (add-hook 'python-base-mode-hook 'lsp)
+;; (require 'flycheck)
+;; (add-hook 'lsp-mode-hook (lambda () 'flycheck-mode))
+;; (define-key flycheck-mode-map (kbd "C-x c b") 'list-flycheck-errors)
+;; (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
+;; (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
 
 (require 'vterm)
 (require 'vertico)
@@ -85,9 +152,10 @@
       completion-category-defaults nil
       completion-category-overrides '((file (styles partial-completion))))
 (vertico-flat-mode)
+(setq minibuffer-default-prompt-format " [%s]")
 ;; todo
-(define-key vertico-flat-map (kbd "C-d") 'dired-at-point)
-(define-key vertico-flat-map (kbd "C-f") 'find-file-at-point)
+;; (define-key vertico-flat-map (kbd "C-d") 'dired-at-point)
+;; (define-key vertico-flat-map (kbd "C-f") 'find-file-at-point)
 
 (require 'fussy)
 (fussy-setup)
@@ -136,10 +204,13 @@
       fzf/grep-command "rg --no-heading -nH"
       fzf/position-bottom t
       fzf/window-height 15)
-(global-set-key (kbd "C-s") 'fzf-find-in-buffer)
+;; (global-set-key (kbd "C-s") 'fzf-find-in-buffer) 
 
 ;; (require 'swiper)
 ;; (global-set-key (kbd "C-s") 'swiper)
+
+(require 'keycast)
+(keycast-mode-line-mode)
 
 ;; end of package
 
@@ -205,8 +276,12 @@
 
 ;; end of custom functions
 
+;; native compile init.el
+
 ;; global keymaps
 (global-set-key (kbd "C-x c v") 'vterm-other-window)
 
 ;; custom.el
 (load-if-exists custom-file)
+
+(profiler-stop)
