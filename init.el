@@ -273,6 +273,28 @@
     (kill-new (buffer-string))
     (message "File contents added to kill-ring.")))
 
+(defun project-whitespace-cleanup-project-files ()
+  "Run `whitespace-cleanup' on all project files using project.el."
+  (interactive)
+  (let ((project (project-current)))
+    (when project
+      (dolist (file (project-files project))
+	(let ((path (expand-file-name file (project-root project))))
+	  (when (file-exists-p path)
+	    (with-current-buffer (find-file-noselect path)
+	      (whitespace-cleanup)
+	      (save-buffer)
+	      (kill-buffer))))))))
+
+;;; opposite of fill-paragraph
+(defun unfill-paragraph ()
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
+
+(define-key global-map "\M-Q" 'unfill-paragraph)
+
 ;; end of custom functions
 
 ;; native compile init.el
