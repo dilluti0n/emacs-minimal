@@ -150,7 +150,7 @@
 (setq completion-styles '(orderless basic)
       completion-category-defaults nil
       completion-category-overrides '((file (styles partial-completion))))
-(vertico-flat-mode)
+;; (vertico-flat-mode)
 (setq minibuffer-default-prompt-format " [%s]")
 ;; todo
 ;; (define-key vertico-flat-map (kbd "C-d") 'dired-at-point)
@@ -203,13 +203,16 @@
       fzf/grep-command "rg --no-heading -nH"
       fzf/position-bottom t
       fzf/window-height 15)
-;; (global-set-key (kbd "C-s") 'fzf-find-in-buffer) 
+
+(setenv "FZF_DEFAULT_COMMAND" "fd --type file")
+
+;; (global-set-key (kbd "C-s") 'fzf-find-in-buffer)
 
 ;; (require 'swiper)
 ;; (global-set-key (kbd "C-s") 'swiper)
 
 (require 'keycast)
-(keycast-mode-line-mode)
+;; (keycast-mode-line-mode)
 
 ;; end of package
 
