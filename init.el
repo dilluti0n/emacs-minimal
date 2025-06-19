@@ -104,8 +104,29 @@
 ;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 
-(require 'magit)
-(require 'company)
+(defun package-install-if-not (package)
+  "If PACKAGE is installed, return t. If not, try to `package-install' it
+and return t if it is installed successfully. Else, return nil."
+  (if (package-installed-p package)
+      t
+    (progn
+      (unless package-archive-contents
+	(package-refresh-contents))
+      (package-install package)
+      (package-installed-p package))))
+
+(defun ensure-require (package &optional feature)
+  "`require' FEATURE (or PACKAGE) if available, install if needed.
+Return non-nil if successful, nil otherwise."
+  (let ((feat (or feature package)))
+    (if (require feat nil t)
+	t
+      (progn
+	(package-install-if-not package)
+	(require feat)))))
+
+(ensure-require 'magit)
+(ensure-require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-minimum-prefix-length 1
       company-idle-delay 0
@@ -113,7 +134,7 @@
       company-tooltip-align-annotations nil
       company-require-match 'never)
 
-(require 'eglot)
+(ensure-require 'eglot)
 (dolist (hook '(cc-mode-hook
 		 c-ts-mode-hook
 		 c++-ts-mode-hook
@@ -130,24 +151,24 @@
       eglot-events-buffer-config '(:size 0 :format full))
 (setq eldoc-echo-area-use-multiline-p nil)
 
-;; (require 'lsp-mode)
+;; (ensure-require 'lsp-mode)
 ;; (add-hook 'cc-mode-hook 'lsp)
 ;; (add-hook 'c-ts-mode-hook 'lsp)
 ;; (add-hook 'c++-ts-mode-hook 'lsp)
 ;; (add-hook 'python-base-mode-hook 'lsp)
-;; (require 'flycheck)
+;; (ensure-require 'flycheck)
 ;; (add-hook 'lsp-mode-hook (lambda () 'flycheck-mode))
 ;; (define-key flycheck-mode-map (kbd "C-x c b") 'list-flycheck-errors)
 ;; (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
 ;; (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
 
-(require 'vterm)
-(require 'vertico)
+(ensure-require 'vterm)
+(ensure-require 'vertico)
 (vertico-mode)
 ;; (setq enable-recursive-minibuffers t
 ;;       read-extended-command-predicate #'command-completion-default-include-p
 ;;       minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
-(require 'orderless)
+(ensure-require 'orderless)
 (setq completion-styles '(orderless basic)
       completion-category-defaults nil
       completion-category-overrides '((file (styles partial-completion))))
@@ -157,12 +178,13 @@
 ;; (define-key vertico-flat-map (kbd "C-d") 'dired-at-point)
 ;; (define-key vertico-flat-map (kbd "C-f") 'find-file-at-point)
 
-(require 'fussy)
+(ensure-require 'fussy)
 (fussy-setup)
 (fussy-company-setup)
 (fussy-eglot-setup)
-(add-to-list 'load-path (expand-file-name "elpa/fzf-native" user-emacs-directory))
-(require 'fzf-native)
+(add-to-list 'load-path (expand-file-name "usr/fzf-native" user-emacs-directory))
+(ensure-require 'fzf-native)
+(setq fzf-native-always-compile-module t)
 (setq fussy-score-fn 'fussy-fzf-native-score)
 (fzf-native-load-dyn)
 
@@ -175,29 +197,29 @@
 			      (car args))
 		      (cdr args)))))
 
-(require 'undo-tree)
+(ensure-require 'undo-tree)
 (global-undo-tree-mode)
 (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo"))))
 
-(require 'avy)
+(ensure-require 'avy)
 (avy-setup-default)
 (global-set-key (kbd "C-c C-j") 'avy-resume)
 (setq avy-timeout-seconds 0.3)
 (global-set-key (kbd "C-;") 'avy-goto-char-timer)
 (global-set-key (kbd "C-'") 'avy-goto-line)
 
-(require 'which-key)
+(ensure-require 'which-key)
 (which-key-mode)
 
-(require 'gptel)
+(ensure-require 'gptel)
 (setq gptel-api-key (getenv "OPENAI_API_KEY"))
 
-(require 'crux)
+(ensure-require 'crux)
 
-(require 'rg)
+(ensure-require 'rg)
 (rg-enable-default-bindings)
 
-(require 'fzf)
+(ensure-require 'fzf)
 (setq fzf/args "-x --color bw --print-query"
       fzf/executable "fzf"
       fzf/git-grep-args "-i --line-number %s"
@@ -209,10 +231,10 @@
 
 ;; (global-set-key (kbd "C-s") 'fzf-find-in-buffer)
 
-;; (require 'swiper)
+;; (ensure-require 'swiper)
 ;; (global-set-key (kbd "C-s") 'swiper)
 
-(require 'keycast)
+(ensure-require 'keycast)
 ;; (keycast-mode-line-mode)
 
 ;; end of package
