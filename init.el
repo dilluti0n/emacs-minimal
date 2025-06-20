@@ -78,7 +78,6 @@
 	   (c++-mode . c++-ts-mode)
 	   (c-or-c++-mode . c-or-c++-ts-mode)
 	   (bash-mode . bash-ts-mode)
-	   (css-mode . css-ts-mode)
 	   (json-mode . json-ts-mode)
 	   (js-json-mode . json-ts-mode)
 	   (sh-mode . bash-ts-mode)
