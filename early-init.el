@@ -6,7 +6,7 @@
 
 (defun load-if-exists (file-name)
   "load file if exists"
-  (when (file-exists-p file-name) (load file-name)))
+  (if (file-exists-p file-name) (load file-name)))
 
 (setq gc-cons-threshold (* 32 1024 1024))
 
