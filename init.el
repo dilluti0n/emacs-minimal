@@ -324,10 +324,10 @@ Return non-nil if successful, nil otherwise."
 (defun rename-this-file (newname &optional ok-if-already-exists)
   "Rename currently visiting file"
   (interactive "FNew name: ")
-  (let ((olddnmae (buffer-file-name)))
-    (if (not olddnmae)
+  (let ((oldname (buffer-file-name)))
+    (if (not oldname)
 	(error "Buffer is not visiting a file")
-      (rename-file olddnmae newname ok-if-already-exists)
+      (rename-file oldname newname ok-if-already-exists)
       (set-visited-file-name newname))))
 
 (define-key global-map "\M-Q" 'unfill-paragraph)
