@@ -1,4 +1,3 @@
-(profiler-start 'cpu)
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 (setq inhibit-startup-screen t
@@ -342,5 +341,3 @@ Return non-nil if successful, nil otherwise."
 
 ;; custom.el
 (load-if-exists custom-file)
-
-(profiler-stop)
