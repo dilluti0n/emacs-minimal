@@ -1,5 +1,3 @@
-(setenv "PATH" (concat (getenv "PATH")
-		       (concat ":" (concat (getenv "HOME") "/.local/bin"))))
 (when (eq system-type 'darwin)
   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
   (setq exec-path (append exec-path '("/usr/local/bin"))))
