@@ -237,6 +237,9 @@ Return non-nil if successful, nil otherwise."
 (ensure-require 'keycast)
 ;; (keycast-mode-line-mode)
 
+(ensure-require 'which-func)
+(which-function-mode +1)
+
 ;; end of package
 
 ;; custom functions
