@@ -20,6 +20,9 @@
 ;; tab is 8 spaces !!!!
 (setq tab-width 8)
 
+(setq-default show-trailing-whitespace nil)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 ;; default hooks
 (add-hook 'prog-mode-hook
 	  (lambda ()
@@ -150,6 +153,9 @@ Return non-nil if successful, nil otherwise."
       eglot-events-buffer-config '(:size 0 :format full))
 (setq eldoc-echo-area-use-multiline-p nil)
 
+(require 'eglot-booster)
+(eglot-booster-mode)
+
 ;; (ensure-require 'lsp-mode)
 ;; (add-hook 'cc-mode-hook 'lsp)
 ;; (add-hook 'c-ts-mode-hook 'lsp)
@@ -181,6 +187,8 @@ Return non-nil if successful, nil otherwise."
 (fussy-setup)
 (fussy-company-setup)
 (fussy-eglot-setup)
+
+;; TODO: use package-vc-install
 (add-to-list 'load-path (expand-file-name "usr/fzf-native" user-emacs-directory))
 (ensure-require 'fzf-native)
 (setq fzf-native-always-compile-module t)
@@ -325,6 +333,8 @@ Return non-nil if successful, nil otherwise."
   (let ((fill-column (point-max)))
     (fill-paragraph nil)))
 
+(define-key global-map "\M-Q" 'unfill-paragraph)
+
 (defun rename-this-file (newname &optional ok-if-already-exists)
   "Rename currently visiting file"
   (interactive "FNew name: ")
@@ -334,7 +344,16 @@ Return non-nil if successful, nil otherwise."
       (rename-file oldname newname ok-if-already-exists)
       (set-visited-file-name newname))))
 
-(define-key global-map "\M-Q" 'unfill-paragraph)
+(defun fcd (&optional dir)
+  "alias fcd='cd $(fd --type=directory --exclude='.git' -H |fzf)'"
+  (interactive "DBase directory: ")
+  (let* ((dir (or dir default-directory))
+         (cmd (format "fd --type=directory --exclude=.git -H . %s"
+                      (shell-quote-argument
+                       (file-name-as-directory (expand-file-name dir))))))
+    (fzf-with-command cmd #'dired)))
+
+(global-set-key (kbd "C-x C-d") (lambda () (interactive) (fcd "~")))
 
 ;; end of custom functions
 
