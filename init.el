@@ -4,7 +4,8 @@
       vc-follow-symlinks t
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
       default-input-method "korean-hangul"
-      ring-bell-function 'ignore)
+      ring-bell-function 'ignore
+      split-width-threshold 100)
 
 (menu-bar-mode 0)
 (tool-bar-mode 0)
@@ -278,7 +279,7 @@ Return non-nil if successful, nil otherwise."
 (defun open-st-in-workdir ()
   (interactive)
   (call-process-shell-command
-   (concat "setsid st -e tmux new-session -c " (expand-file-name default-directory)) nil 0))
+   (concat "setsid st -c bash -i -c cd " (expand-file-name default-directory)) nil 0))
 (global-set-key (kbd "C-x c t") 'open-st-in-workdir)
 
 ;; copy pwd to kill ring
