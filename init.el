@@ -154,6 +154,8 @@ Return non-nil if successful, nil otherwise."
       eglot-events-buffer-config '(:size 0 :format full))
 (setq eldoc-echo-area-use-multiline-p nil)
 
+(unless (package-installed-p 'eglot-booster)
+  (package-vc-install "https://github.com/jdtsmith/eglot-booster.git"))
 (require 'eglot-booster)
 (eglot-booster-mode)
 
@@ -168,7 +170,6 @@ Return non-nil if successful, nil otherwise."
 ;; (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
 ;; (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
 
-(ensure-require 'vterm)
 (ensure-require 'vertico)
 (vertico-mode)
 ;; (setq enable-recursive-minibuffers t
@@ -190,8 +191,9 @@ Return non-nil if successful, nil otherwise."
 (fussy-eglot-setup)
 
 ;; TODO: use package-vc-install
-(add-to-list 'load-path (expand-file-name "usr/fzf-native" user-emacs-directory))
-(ensure-require 'fzf-native)
+(unless (package-installed-p 'fzf-native)
+  (package-vc-install "https://github.com/dangduc/fzf-native.git"))
+(require 'fzf-native)
 (setq fzf-native-always-compile-module t)
 (setq fussy-score-fn 'fussy-fzf-native-score)
 (fzf-native-load-dyn)
@@ -361,7 +363,7 @@ Return non-nil if successful, nil otherwise."
 ;; native compile init.el
 
 ;; global keymaps
-(global-set-key (kbd "C-x c v") 'vterm-other-window)
+; (global-set-key (kbd "C-x c v") 'vterm-other-window)
 
 ;; custom.el
 (load-if-exists custom-file)
