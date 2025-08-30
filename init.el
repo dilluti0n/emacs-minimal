@@ -44,7 +44,7 @@
 	   (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
 	   (python . ("https://github.com/tree-sitter/tree-sitter-python" "v0.20.4"))
 	   (go . ("https://github.com/tree-sitter/tree-sitter-go" "v0.20.0"))
-           (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod"))
+	   (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod"))
 	   (markdown . ("https://github.com/ikatyang/tree-sitter-markdown"))
 	   (make . ("https://github.com/alemuller/tree-sitter-make"))
 	   (elisp . ("https://github.com/Wilfred/tree-sitter-elisp"))
@@ -55,7 +55,8 @@
 	   (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
 	   (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
 	   (yaml . ("https://github.com/ikatyang/tree-sitter-yaml" "v0.5.0"))
-	   (prisma . ("https://github.com/victorhqc/tree-sitter-prisma"))))
+	   (prisma . ("https://github.com/victorhqc/tree-sitter-prisma"))
+	   (rust . ("https://github.com/tree-sitter/tree-sitter-rust" "v0.23.3"))))
   (add-to-list 'treesit-language-source-alist grammar))
 
 (defun install-treesit-grammars ()
@@ -71,7 +72,8 @@
 	   ("\\.mts\\'" . typescript-ts-mode)
 	   ("\\.cjs\\'" . typescript-ts-mode)
 	   ("\\.json\\'" . json-ts-mode)
-           ("\\.go\\'" . go-ts-mode)))
+	   ("\\.go\\'" . go-ts-mode)
+	   ("\\.rs\\'" . rust-ts-mode)))
   (add-to-list 'auto-mode-alist mapping))
 
 (dolist (mapping
@@ -173,8 +175,8 @@ Return non-nil if successful, nil otherwise."
 (ensure-require 'vertico)
 (vertico-mode)
 ;; (setq enable-recursive-minibuffers t
-;;       read-extended-command-predicate #'command-completion-default-include-p
-;;       minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
+;;	 read-extended-command-predicate #'command-completion-default-include-p
+;;	 minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
 (ensure-require 'orderless)
 (setq completion-styles '(orderless basic)
       completion-category-defaults nil
@@ -351,9 +353,9 @@ Return non-nil if successful, nil otherwise."
   "alias fcd='cd $(fd --type=directory --exclude='.git' -H |fzf)'"
   (interactive "DBase directory: ")
   (let* ((dir (or dir default-directory))
-         (cmd (format "fd --type=directory --exclude=.git -H . %s"
-                      (shell-quote-argument
-                       (file-name-as-directory (expand-file-name dir))))))
+	 (cmd (format "fd --type=directory --exclude=.git -H . %s"
+		      (shell-quote-argument
+		       (file-name-as-directory (expand-file-name dir))))))
     (fzf-with-command cmd #'dired)))
 
 (global-set-key (kbd "C-x C-d") (lambda () (interactive) (fcd "~")))
