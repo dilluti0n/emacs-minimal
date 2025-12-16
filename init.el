@@ -256,6 +256,14 @@ Return non-nil if successful, nil otherwise."
 (with-eval-after-load 'ox
   (require 'ox-hugo))
 
+(ensure-require 'org)
+
+(setq org-directory "~/org")
+(add-to-list 'org-agenda-files
+             (list (file-name-concat org-directory "diary.org")))
+(setq org-agenda-format-date "%Y-%m-%d %a")
+
+
 ;; end of package
 
 ;; custom functions
