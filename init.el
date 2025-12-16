@@ -7,6 +7,9 @@
       ring-bell-function 'ignore
       split-width-threshold 100)
 
+(set-fontset-font t 'hangul
+                  (font-spec :family "NanumGodicCoding"))
+
 (menu-bar-mode 0)
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
