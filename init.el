@@ -8,7 +8,7 @@
       split-width-threshold 100)
 
 (set-fontset-font t 'hangul
-                  (font-spec :family "NanumGodicCoding"))
+                  (font-spec :family "Noto Sans CJK KR"))
 
 (menu-bar-mode 0)
 (tool-bar-mode 0)
@@ -263,9 +263,8 @@ Return non-nil if successful, nil otherwise."
 
 (setq org-directory "~/org")
 (add-to-list 'org-agenda-files
-             (list (file-name-concat org-directory "diary.org")))
+             (file-name-concat org-directory "diary.org"))
 (setq org-agenda-format-date "%Y-%m-%d %a")
-
 
 ;; end of package
 
