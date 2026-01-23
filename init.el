@@ -5,7 +5,7 @@
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
       default-input-method "korean-hangul"
       ring-bell-function 'ignore
-      split-width-threshold 100)
+      split-width-threshold 140)
 
 (set-fontset-font t 'hangul
                   (font-spec :family "Noto Sans CJK KR"))
@@ -26,6 +26,11 @@
 
 (setq-default show-trailing-whitespace nil)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; tramp
+(setq remote-file-name-inhibit-cache nil
+      tramp-verbose 1
+      tramp-use-ssh-controlmaster-options nil)
 
 ;; default hooks
 (add-hook 'prog-mode-hook
@@ -104,6 +109,14 @@
 
 (dolist (hook '(c-ts-mode-hook c++-ts-mode-hook))
   (add-hook hook #'subword-mode))
+
+;; compile
+(with-eval-after-load 'compile
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(rustc-arrow
+                 "^\\s-*--> \\([^:\n]+\\):\\([0-9]+\\):\\([0-9]+\\)"
+                 1 2 3))
+  (add-to-list 'compilation-error-regexp-alist 'rustc-arrow))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
