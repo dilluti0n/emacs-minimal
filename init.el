@@ -5,7 +5,7 @@
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
       default-input-method "korean-hangul"
       ring-bell-function 'ignore
-      split-width-threshold 140)
+      split-width-threshold 130)
 
 (set-fontset-font t 'hangul
                   (font-spec :family "Noto Sans CJK KR"))
@@ -75,7 +75,7 @@
 	 '(("\\.tsx\\'" . tsx-ts-mode)
 	   ("\\.jsx\\'" . tsx-ts-mode)
 	   ("\\.ts\\'" . typescript-ts-mode)
-	   ("\\.js\\'" . typescript-ts-mode)
+	   ;; ("\\.js\\'" . js-mode)
 	   ("\\.mjs\\'" . typescript-ts-mode)
 	   ("\\.mts\\'" . typescript-ts-mode)
 	   ("\\.cjs\\'" . typescript-ts-mode)
@@ -88,8 +88,8 @@
 	 '((python-mode . python-ts-mode)
 	   (css-mode . css-ts-mode)
 	   (typescript-mode . typescript-ts-mode)
-	   (js-mode . typescript-ts-mode)
-	   (js2-mode . typescript-ts-mode)
+	   ;; (js-mode . typescript-ts-mode)
+	   ;; (js2-mode . typescript-ts-mode)
 	   (c-mode . c-ts-mode)
 	   (c++-mode . c++-ts-mode)
 	   (c-or-c++-mode . c-or-c++-ts-mode)
@@ -146,6 +146,10 @@ Return non-nil if successful, nil otherwise."
 	(package-install-if-not package)
 	(require feat)))))
 
+;; project.el
+(with-eval-after-load 'project
+  (add-to-list 'project-vc-extra-root-markers ".project-root"))
+
 (ensure-require 'magit)
 (ensure-require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
@@ -158,8 +162,7 @@ Return non-nil if successful, nil otherwise."
 (ensure-require 'eglot)
 (dolist (hook '(cc-mode-hook
 		 c-ts-mode-hook
-		 c++-ts-mode-hook
-		 typescript-ts-mode-hook))
+		 c++-ts-mode-hook))
   (add-hook hook 'eglot-ensure))
 (add-hook 'python-base-mode-hook 'eglot-ensure)
 (define-key eglot-mode-map (kbd "C-c r") 'eglot-rename)
@@ -279,6 +282,11 @@ Return non-nil if successful, nil otherwise."
              (file-name-concat org-directory "diary.org"))
 (setq org-agenda-format-date "%Y-%m-%d %a")
 
+;; auctex
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+
 ;; end of package
 
 ;; custom functions
@@ -392,3 +400,4 @@ Return non-nil if successful, nil otherwise."
 
 ;; custom.el
 (load-if-exists custom-file)
+(put 'dired-find-alternate-file 'disabled nil)
