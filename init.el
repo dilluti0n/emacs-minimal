@@ -152,18 +152,9 @@ Return non-nil if successful, nil otherwise."
 
 (ensure-require 'magit)
 
-(ensure-require 'corfu)
-(add-hook 'after-init-hook 'global-corfu-mode)
-(setq corfu-auto        t
-      corfu-auto-delay  0  ;; TOO SMALL - NOT RECOMMENDED!
-      corfu-auto-prefix 1)
-(add-hook 'corfu-mode-hook
-          (lambda ()
-            ;; Settings only for Corfu
-            (setq-local completion-styles '(basic)
-                        completion-category-overrides nil
-                        completion-category-defaults nil)))
-
+;;
+;; eglot settings (with eglot-booster)
+;;
 (ensure-require 'eglot)
 (dolist (hook '(cc-mode-hook
 		 c-ts-mode-hook
@@ -186,23 +177,19 @@ Return non-nil if successful, nil otherwise."
   (require 'eglot-booster)
   (eglot-booster-mode))                 ;This is fail when emacs-lsp-booster executable is not available
 
-(ensure-require 'vertico)
-(vertico-mode)
-;; (setq enable-recursive-minibuffers t
-;;	 read-extended-command-predicate #'command-completion-default-include-p
-;;	 minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
-(setq minibuffer-default-prompt-format " [%s]")
-
+;;
+;; completion settings (completion <- fussy with fzf-native backend <- orderless)
+;;
 (ensure-require 'orderless)
-(setq completion-styles '(orderless basic)
-      completion-category-defaults nil
+(setq completion-category-defaults nil
       completion-category-overrides '((file (styles partial-completion)))
       completion-category-defaults nil ;; Disable defaults, use our settings
-      completion-pcm-leading-wildcard t ;; Emacs 31: partial-completion behaves like substring
-)
+      ;; Emacs 31: partial-completion behaves like substring
+      completion-pcm-leading-wildcard t)
 
 (ensure-require 'fussy)
 (fussy-setup)
+(setq fussy-filter-default-styles '(orderless)) ;; complation-style -> fussy -> orderless
 ;; (fussy-company-setup)
 (fussy-eglot-setup)
 ;; fussy-corfu-setup
@@ -214,7 +201,7 @@ Return non-nil if successful, nil otherwise."
                         fussy-default-regex-fn 'fussy-pattern-first-letter
                         fussy-prefer-prefix nil)))
 
-;; fzf-native
+;; set fzf-native for fussy backend
 ;; TODO: use package-vc-install
 (unless (package-installed-p 'fzf-native)
   (package-vc-install "https://github.com/dangduc/fzf-native.git"))
@@ -232,16 +219,32 @@ Return non-nil if successful, nil otherwise."
 			      (car args))
 		      (cdr args)))))
 
+;;
+;; completion frontends (vertico, corfu)
+;;
+(ensure-require 'vertico)
+(vertico-mode)
+(setq enable-recursive-minibuffers t
+      minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
+(setq minibuffer-default-prompt-format " [%s]")
+
+(ensure-require 'corfu)
+(add-hook 'after-init-hook 'global-corfu-mode)
+(setq corfu-auto        t
+      corfu-auto-delay  0  ;; TOO SMALL - NOT RECOMMENDED!
+      corfu-auto-prefix 1)
+(add-hook 'corfu-mode-hook
+          (lambda ()
+            ;; Settings only for Corfu
+            (setq-local completion-category-overrides nil
+                        completion-category-defaults nil)))
+
+;;
+;; miscellaneous
+;;
 (ensure-require 'undo-tree)
 (global-undo-tree-mode)
 (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo"))))
-
-(ensure-require 'avy)
-(avy-setup-default)
-(global-set-key (kbd "C-c C-j") 'avy-resume)
-(setq avy-timeout-seconds 0.3)
-(global-set-key (kbd "C-;") 'avy-goto-char-timer)
-(global-set-key (kbd "C-'") 'avy-goto-line)
 
 (ensure-require 'which-key)
 (which-key-mode)
@@ -255,27 +258,13 @@ Return non-nil if successful, nil otherwise."
 (rg-enable-default-bindings)
 
 (ensure-require 'fzf)
-(setq fzf/args "-x --color bw --print-query"
-      fzf/executable "fzf"
-      fzf/git-grep-args "-i --line-number %s"
-      fzf/grep-command "rg --no-heading -nH"
-      fzf/position-bottom t
-      fzf/window-height 15)
-
-(setenv "FZF_DEFAULT_COMMAND" "fd --type file")
-
-;; (global-set-key (kbd "C-s") 'fzf-find-in-buffer)
-
-;; (ensure-require 'swiper)
-;; (global-set-key (kbd "C-s") 'swiper)
-
-(ensure-require 'keycast)
-;; (keycast-mode-line-mode)
 
 (ensure-require 'which-func)
 (which-function-mode +1)
 
+;;
 ;; org-mode
+;;
 (package-install-if-not 'ox-hugo)
 (with-eval-after-load 'ox
   (require 'ox-hugo))
@@ -287,7 +276,9 @@ Return non-nil if successful, nil otherwise."
              (file-name-concat org-directory "diary.org"))
 (setq org-agenda-format-date "%Y-%m-%d %a")
 
+;;
 ;; auctex
+;;
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
