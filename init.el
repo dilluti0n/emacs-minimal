@@ -72,16 +72,16 @@
     (treesit-install-language-grammar (car grammar))))
 
 (dolist (mapping
-	 '(("\\.tsx\\'" . tsx-ts-mode)
-	   ("\\.jsx\\'" . tsx-ts-mode)
+	 '(
 	   ("\\.ts\\'" . typescript-ts-mode)
-	   ;; ("\\.js\\'" . js-mode)
-	   ("\\.mjs\\'" . typescript-ts-mode)
-	   ("\\.mts\\'" . typescript-ts-mode)
-	   ("\\.cjs\\'" . typescript-ts-mode)
+	   ("\\.js\\'" . js-ts-mode)
 	   ("\\.json\\'" . json-ts-mode)
 	   ("\\.go\\'" . go-ts-mode)
-	   ("\\.rs\\'" . rust-ts-mode)))
+	   ("\\.rs\\'" . rust-ts-mode)
+           ("\\.yml\\'" . yaml-ts-mode)
+           ("\\.yaml\\'" . yaml-ts-mode)
+           )
+         )
   (add-to-list 'auto-mode-alist mapping))
 
 (dolist (mapping
