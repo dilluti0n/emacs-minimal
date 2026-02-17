@@ -151,13 +151,25 @@ Return non-nil if successful, nil otherwise."
   (add-to-list 'project-vc-extra-root-markers ".project-root"))
 
 (ensure-require 'magit)
-(ensure-require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-(setq company-minimum-prefix-length 1
-      company-idle-delay 0
-      company-show-numbers nil
-      company-tooltip-align-annotations nil
-      company-require-match 'never)
+;; (ensure-require 'company)
+;; (add-hook 'after-init-hook 'global-company-mode)
+;; (setq company-minimum-prefix-length 1
+;;       company-idle-delay 0
+;;       company-show-numbers nil
+;;       company-tooltip-align-annotations nil
+;;       company-require-match 'never)
+
+(ensure-require 'corfu)
+(add-hook 'after-init-hook 'global-corfu-mode)
+(setq corfu-auto        t
+      corfu-auto-delay  0  ;; TOO SMALL - NOT RECOMMENDED!
+      corfu-auto-prefix 1)
+(add-hook 'corfu-mode-hook
+          (lambda ()
+            ;; Settings only for Corfu
+            (setq-local completion-styles '(basic)
+                        completion-category-overrides nil
+                        completion-category-defaults nil)))
 
 (ensure-require 'eglot)
 (dolist (hook '(cc-mode-hook
@@ -180,37 +192,35 @@ Return non-nil if successful, nil otherwise."
 (require 'eglot-booster)
 (eglot-booster-mode)
 
-;; (ensure-require 'lsp-mode)
-;; (add-hook 'cc-mode-hook 'lsp)
-;; (add-hook 'c-ts-mode-hook 'lsp)
-;; (add-hook 'c++-ts-mode-hook 'lsp)
-;; (add-hook 'python-base-mode-hook 'lsp)
-;; (ensure-require 'flycheck)
-;; (add-hook 'lsp-mode-hook (lambda () 'flycheck-mode))
-;; (define-key flycheck-mode-map (kbd "C-x c b") 'list-flycheck-errors)
-;; (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
-;; (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
-
 (ensure-require 'vertico)
 (vertico-mode)
 ;; (setq enable-recursive-minibuffers t
 ;;	 read-extended-command-predicate #'command-completion-default-include-p
 ;;	 minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
+(setq minibuffer-default-prompt-format " [%s]")
+
 (ensure-require 'orderless)
 (setq completion-styles '(orderless basic)
       completion-category-defaults nil
-      completion-category-overrides '((file (styles partial-completion))))
-;; (vertico-flat-mode)
-(setq minibuffer-default-prompt-format " [%s]")
-;; todo
-;; (define-key vertico-flat-map (kbd "C-d") 'dired-at-point)
-;; (define-key vertico-flat-map (kbd "C-f") 'find-file-at-point)
+      completion-category-overrides '((file (styles partial-completion)))
+      completion-category-defaults nil ;; Disable defaults, use our settings
+      completion-pcm-leading-wildcard t ;; Emacs 31: partial-completion behaves like substring
+)
 
 (ensure-require 'fussy)
 (fussy-setup)
-(fussy-company-setup)
+;; (fussy-company-setup)
 (fussy-eglot-setup)
+;; fussy-corfu-setup
+;; For cache functionality.
+(advice-add 'corfu--capf-wrapper :before 'fussy-wipe-cache)
+(add-hook 'corfu-mode-hook
+          (lambda ()
+            (setq-local fussy-max-candidate-limit 5000
+                        fussy-default-regex-fn 'fussy-pattern-first-letter
+                        fussy-prefer-prefix nil)))
 
+;; fzf-native
 ;; TODO: use package-vc-install
 (unless (package-installed-p 'fzf-native)
   (package-vc-install "https://github.com/dangduc/fzf-native.git"))
@@ -271,6 +281,7 @@ Return non-nil if successful, nil otherwise."
 (ensure-require 'which-func)
 (which-function-mode +1)
 
+;; org-mode
 (package-install-if-not 'ox-hugo)
 (with-eval-after-load 'ox
   (require 'ox-hugo))
