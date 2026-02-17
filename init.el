@@ -182,8 +182,9 @@ Return non-nil if successful, nil otherwise."
 
 (unless (package-installed-p 'eglot-booster)
   (package-vc-install "https://github.com/jdtsmith/eglot-booster.git"))
-(require 'eglot-booster)
-(eglot-booster-mode)
+(with-demoted-errors "Eglot-booster error: %S"
+  (require 'eglot-booster)
+  (eglot-booster-mode))                 ;This is fail when emacs-lsp-booster executable is not available
 
 (ensure-require 'vertico)
 (vertico-mode)
