@@ -1,6 +1,6 @@
 (defun add-path (name)
   (setenv "PATH" (concat (concat (getenv "PATH") ":") name))
-  (setq exec-path (append exec-path '(name))))
+  (setq exec-path (append exec-path (list name))))
 
 (when (eq system-type 'darwin)
   (add-path "/usr/local/bin"))
