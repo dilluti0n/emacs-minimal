@@ -151,13 +151,6 @@ Return non-nil if successful, nil otherwise."
   (add-to-list 'project-vc-extra-root-markers ".project-root"))
 
 (ensure-require 'magit)
-;; (ensure-require 'company)
-;; (add-hook 'after-init-hook 'global-company-mode)
-;; (setq company-minimum-prefix-length 1
-;;       company-idle-delay 0
-;;       company-show-numbers nil
-;;       company-tooltip-align-annotations nil
-;;       company-require-match 'never)
 
 (ensure-require 'corfu)
 (add-hook 'after-init-hook 'global-corfu-mode)
