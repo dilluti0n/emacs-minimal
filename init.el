@@ -270,11 +270,15 @@ Return non-nil if successful, nil otherwise."
   (require 'ox-hugo))
 
 (ensure-require 'org)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
 
 (setq org-directory "~/org")
-(add-to-list 'org-agenda-files
-             (file-name-concat org-directory "diary.org"))
+(setq org-agenda-files (directory-files-recursively "~/org" "\\.org$"))
 (setq org-agenda-format-date "%Y-%m-%d %a")
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/org/todo.org" "INBOX")
+         "* TODO %?\n  Entered on %U")))
 
 ;;
 ;; auctex
