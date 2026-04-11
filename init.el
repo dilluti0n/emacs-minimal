@@ -241,7 +241,7 @@ Return non-nil if successful, nil otherwise."
 ;;       corfu-auto-delay  0  ;; TOO SMALL - NOT RECOMMENDED!
 ;;       corfu-auto-prefix 1)
 (setq corfu-auto nil)
-(global-set-key (kbd "C-;") 'completion-at-point)
+(global-set-key (kbd "C-'") 'completion-at-point)
 (add-hook 'corfu-mode-hook
           (lambda ()
             ;; Settings only for Corfu
