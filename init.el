@@ -410,3 +410,7 @@ Return non-nil if successful, nil otherwise."
 ;; custom.el
 (load-if-exists custom-file)
 (put 'dired-find-alternate-file 'disabled nil)
+
+(require 'server)
+(unless (server-running-p)
+  (server-start))
