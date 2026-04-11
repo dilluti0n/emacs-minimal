@@ -7,6 +7,8 @@
       ring-bell-function 'ignore
       split-width-threshold 130)
 
+(global-set-key (kbd "S-SPC") 'toggle-input-method)
+
 (set-fontset-font t 'hangul
                   (font-spec :family "Noto Sans CJK KR"))
 
@@ -181,8 +183,7 @@ Return non-nil if successful, nil otherwise."
 ;; completion settings (completion <- fussy with fzf-native backend <- orderless)
 ;;
 (ensure-require 'orderless)
-(setq completion-category-defaults nil
-      completion-category-overrides '((file (styles partial-completion)))
+(setq completion-category-overrides '((file (styles partial-completion)))
       completion-category-defaults nil ;; Disable defaults, use our settings
       ;; Emacs 31: partial-completion behaves like substring
       completion-pcm-leading-wildcard t)
@@ -219,6 +220,12 @@ Return non-nil if successful, nil otherwise."
 			      (car args))
 		      (cdr args)))))
 
+(ensure-require 'cape)
+(add-to-list 'completion-at-point-functions #'cape-dabbrev)
+(add-to-list 'completion-at-point-functions #'cape-file)
+(setq dabbrev-check-other-buffers t
+      dabbrev-check-all-buffers t)
+
 ;;
 ;; completion frontends (vertico, corfu)
 ;;
@@ -230,9 +237,11 @@ Return non-nil if successful, nil otherwise."
 
 (ensure-require 'corfu)
 (add-hook 'after-init-hook 'global-corfu-mode)
-(setq corfu-auto        t
-      corfu-auto-delay  0  ;; TOO SMALL - NOT RECOMMENDED!
-      corfu-auto-prefix 1)
+;; (setq corfu-auto        t
+;;       corfu-auto-delay  0  ;; TOO SMALL - NOT RECOMMENDED!
+;;       corfu-auto-prefix 1)
+(setq corfu-auto nil)
+(global-set-key (kbd "C-;") 'completion-at-point)
 (add-hook 'corfu-mode-hook
           (lambda ()
             ;; Settings only for Corfu
