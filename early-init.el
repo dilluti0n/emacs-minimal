@@ -15,3 +15,7 @@
 
 ;; sensitive keys
 (load-if-exists (expand-file-name "env.el" user-emacs-directory))
+
+;; Disable ime
+(setenv "XMODIFIERS" "@im=none")
+(setenv "GTK_IM_MODULE" "gtk-im-context-simple")
