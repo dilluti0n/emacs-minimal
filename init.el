@@ -237,10 +237,9 @@ Return non-nil if successful, nil otherwise."
 
 (ensure-require 'corfu)
 (add-hook 'after-init-hook 'global-corfu-mode)
-;; (setq corfu-auto        t
-;;       corfu-auto-delay  0  ;; TOO SMALL - NOT RECOMMENDED!
-;;       corfu-auto-prefix 1)
-(setq corfu-auto nil)
+(setq corfu-auto        t
+      corfu-auto-delay  0.05
+      corfu-auto-prefix 2)
 (global-set-key (kbd "C-'") 'completion-at-point)
 (add-hook 'corfu-mode-hook
           (lambda ()
