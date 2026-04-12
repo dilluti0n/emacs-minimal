@@ -407,7 +407,7 @@ Return non-nil if successful, nil otherwise."
 ;; mail
 (setq send-mail-function 'sendmail-send-it
       message-send-mail-function 'sendmail-send-it
-      sendmail-program "msmtp"
+      sendmail-program (executable-find "msmtp")
       mail-specify-envelope-from t
       message-sendmail-envelope-from 'header
       mail-envelope-from 'header)
