@@ -405,7 +405,15 @@ Return non-nil if successful, nil otherwise."
 ;; native compile init.el
 
 ;; global keymaps
-; (global-set-key (kbd "C-x c v") 'vterm-other-window)
+;; (global-set-key (kbd "C-x c v") 'vterm-other-window)
+
+;; mail
+(setq send-mail-function 'sendmail-send-it
+      message-send-mail-function 'sendmail-send-it
+      sendmail-program "msmtp"
+      mail-specify-envelope-from t
+      message-sendmail-envelope-from 'header
+      mail-envelope-from 'header)
 
 ;; custom.el
 (load-if-exists custom-file)
