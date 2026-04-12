@@ -258,9 +258,6 @@ Return non-nil if successful, nil otherwise."
 (ensure-require 'which-key)
 (which-key-mode)
 
-(ensure-require 'gptel)
-(setq gptel-api-key (getenv "OPENAI_API_KEY"))
-
 (ensure-require 'crux)
 
 (ensure-require 'rg)
