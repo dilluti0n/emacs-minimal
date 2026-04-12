@@ -173,6 +173,38 @@ Return non-nil if successful, nil otherwise."
       eglot-events-buffer-config '(:size 0 :format full))
 (setq eldoc-echo-area-use-multiline-p nil)
 
+;; clangd
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               `((c-mode c-ts-mode c++-mode c++-ts-mode)
+                 . ("clangd"
+                    "--background-index"
+                    "--clang-tidy=false"
+                    "--header-insertion=never"
+                    "--completion-style=detailed"
+                    "--pch-storage=memory"
+                    "-j=4"))))
+
+;; rust-analyzer
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '((rust-ts-mode rust-mode) . ("rust-analyzer")))
+
+  (setq-default eglot-workspace-configuration
+                '(:rust-analyzer
+                  (:checkOnSave (:enable t
+                                 :command "clippy"
+                                 :extraArgs ["--target-dir" "target/analyzer"])
+                   :cargo (:buildScripts (:enable t)
+                           :features "all")
+                   :procMacro (:enable t)
+                   :completion (:autoimport (:enable t)
+                                :postfix (:enable t))
+                   :inlayHints (:bindingModeHints (:enable t)
+                                :closureReturnTypeHints (:enable "always")
+                                :parameterHints (:enable t))
+                   :diagnostics (:experimental (:enable t))))))
+
 (unless (package-installed-p 'eglot-booster)
   (package-vc-install "https://github.com/jdtsmith/eglot-booster.git"))
 (with-demoted-errors "Eglot-booster error: %S"
