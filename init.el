@@ -286,21 +286,31 @@ Return non-nil if successful, nil otherwise."
 (require 'mu4e)
 
 (setq mu4e-maildir "~/Mail"
-      mu4e-get-mail-command "mbsync gmail"
+      mu4e-get-mail-command "mbsync -a"
       mu4e-update-interval nil
       mu4e-change-filenames-when-moving t) ;; mbsync
 
-(setq mu4e-sent-folder   "/gmail/Sent"
-      mu4e-drafts-folder "/gmail/Drafts"
-      mu4e-trash-folder  "/gmail/Trash"
-      mu4e-refile-folder "/gmail/Archive")  ; 'refile'
-
-;; /gmail/Sent
-(setq mu4e-sent-messages-behavior 'delete)
+;; Contexts
+(setq mu4e-contexts
+      (list
+       ;; Fastmail
+       (make-mu4e-context
+        :name "fastmail"
+        :match-func
+        (lambda (msg)
+          (when msg
+            (string-prefix-p "/fastmail" (mu4e-message-field msg :maildir))))
+        :vars '((user-mail-address      . "hskim@dilluti0n.com")
+                (user-full-name         . "Hee-Suk Kim")
+                (mu4e-sent-folder       . "/fastmail/Sent")
+                ;; (mu4e-drafts-folder     . "/fastmail/Drafts")
+                (mu4e-trash-folder      . "/fastmail/Trash")
+                (mu4e-refile-folder     . "/fastmail/Archive")
+                (mu4e-sent-messages-behavior . sent)))))
 
 (setq mu4e-bookmarks
-      '((:name "gentoo-dev" :query "to:gentoo-dev@lists.gentoo.org"  :key ?d)
-        (:name "gentoo-user" :query "to:gentoo-user@lists.gentoo.org" :key ?u)
+      '((:name "unread" :query "flag:unread AND NOT flag:trashed" :key ?u)
+        (:name "gentoo-dev" :query "to:gentoo-dev@lists.gentoo.org"  :key ?d)
         (:name "libssh"      :query "to:libssh@libssh.org"            :key ?l)
         (:name "gnupg-devel" :query "to:gnupg-devel@gnupg.org"        :key ?p)
         (:name "fsf-info"    :query "from:info@fsf.org"               :key ?f)
