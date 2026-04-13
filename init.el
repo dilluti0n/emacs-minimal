@@ -442,7 +442,8 @@ Return non-nil if successful, nil otherwise."
       mail-specify-envelope-from t
       message-sendmail-envelope-from 'header
       mail-envelope-from 'header
-      mml-enable-flowed nil)
+      mml-enable-flowed nil
+      mml-secure-openpgp-sign-with-sender t)
 
 ;; custom.el
 (load-if-exists custom-file)
