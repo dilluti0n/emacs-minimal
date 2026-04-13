@@ -441,7 +441,8 @@ Return non-nil if successful, nil otherwise."
       sendmail-program (executable-find "msmtp")
       mail-specify-envelope-from t
       message-sendmail-envelope-from 'header
-      mail-envelope-from 'header)
+      mail-envelope-from 'header
+      mml-enable-flowed nil)
 
 ;; custom.el
 (load-if-exists custom-file)
