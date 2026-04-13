@@ -303,7 +303,8 @@ Return non-nil if successful, nil otherwise."
         (:name "gentoo-user" :query "to:gentoo-user@lists.gentoo.org" :key ?u)
         (:name "libssh"      :query "to:libssh@libssh.org"            :key ?l)
         (:name "gnupg-devel" :query "to:gnupg-devel@gnupg.org"        :key ?p)
-        (:name "fsf-info"    :query "from:info@fsf.org"               :key ?f)))
+        (:name "fsf-info"    :query "from:info@fsf.org"               :key ?f)
+        (:name "bitcoin-dev" :query "to:bitcoindev@googlegroups.com" :key ?b)))
 
 ;; msmtp
 (setq send-mail-function 'sendmail-send-it
@@ -314,6 +315,35 @@ Return non-nil if successful, nil otherwise."
       mail-envelope-from 'header
       mml-enable-flowed nil
       mml-secure-openpgp-sign-with-sender t)
+
+;;
+;; irc
+;;
+(ensure-require 'erc)
+(ensure-require 'erc-services)
+
+(add-to-list 'erc-modules 'sasl 'autojoin)
+(erc-update-modules)
+
+(setq erc-sasl-mechanism 'plain
+      erc-sasl-user "dilluti0n"
+      erc-sasl-password (auth-source-pass-get 'secret "hskim/irc.libera.chat"))
+
+(setq erc-autojoin-timing 'ident
+      erc-autojoin-delay 3
+      erc-autojoin-channels-alist
+      '(("#gentoo"
+         "#gentoo-guru"
+         "#libssh"
+         "#bitcoin"
+         "#bitcoin-core-dev"
+         "#emacs"
+         "#plan9"
+         "##math")))
+
+(erc-tls :server "irc.libera.chat" :port 6697
+         :nick "dilluti0n"
+         :user "dilluti0n")
 
 ;;
 ;; miscellaneous
