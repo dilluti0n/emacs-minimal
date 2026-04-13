@@ -280,6 +280,42 @@ Return non-nil if successful, nil otherwise."
                         completion-category-defaults nil)))
 
 ;;
+;; Mail (mu4e with mbsync, msmtp)
+;;
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+
+(setq mu4e-maildir "~/Mail"
+      mu4e-get-mail-command "mbsync gmail"
+      mu4e-update-interval nil
+      mu4e-change-filenames-when-moving t) ;; mbsync
+
+(setq mu4e-sent-folder   "/gmail/Sent"
+      mu4e-drafts-folder "/gmail/Drafts"
+      mu4e-trash-folder  "/gmail/Trash"
+      mu4e-refile-folder "/gmail/Archive")  ; 'refile'
+
+;; /gmail/Sent
+(setq mu4e-sent-messages-behavior 'delete)
+
+(setq mu4e-bookmarks
+      '((:name "gentoo-dev" :query "to:gentoo-dev@lists.gentoo.org"  :key ?d)
+        (:name "gentoo-user" :query "to:gentoo-user@lists.gentoo.org" :key ?u)
+        (:name "libssh"      :query "to:libssh@libssh.org"            :key ?l)
+        (:name "gnupg-devel" :query "to:gnupg-devel@gnupg.org"        :key ?p)
+        (:name "fsf-info"    :query "from:info@fsf.org"               :key ?f)))
+
+;; msmtp
+(setq send-mail-function 'sendmail-send-it
+      message-send-mail-function 'sendmail-send-it
+      sendmail-program (executable-find "msmtp")
+      mail-specify-envelope-from t
+      message-sendmail-envelope-from 'header
+      mail-envelope-from 'header
+      mml-enable-flowed nil
+      mml-secure-openpgp-sign-with-sender t)
+
+;;
 ;; miscellaneous
 ;;
 (ensure-require 'undo-tree)
@@ -434,16 +470,6 @@ Return non-nil if successful, nil otherwise."
 
 ;; global keymaps
 ;; (global-set-key (kbd "C-x c v") 'vterm-other-window)
-
-;; mail
-(setq send-mail-function 'sendmail-send-it
-      message-send-mail-function 'sendmail-send-it
-      sendmail-program (executable-find "msmtp")
-      mail-specify-envelope-from t
-      message-sendmail-envelope-from 'header
-      mail-envelope-from 'header
-      mml-enable-flowed nil
-      mml-secure-openpgp-sign-with-sender t)
 
 ;; custom.el
 (load-if-exists custom-file)
