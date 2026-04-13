@@ -10,13 +10,16 @@
      default))
  '(package-selected-packages
    '(async avy bash-completion cape corfu crux eglot-booster forge fussy
-           fzf fzf-native gptel gruvbox-theme kdl-mode keycast
-           orderless ox-hugo rg undo-tree vertico))
+	   fzf fzf-native gptel gruvbox-theme kdl-mode keycast
+	   orderless ox-hugo rg undo-tree vertico))
  '(package-vc-selected-packages
    '((fzf-native :vc-backend Git :url
-                 "https://github.com/dangduc/fzf-native.git")
+		 "https://github.com/dangduc/fzf-native.git")
      (eglot-booster :vc-backend Git :url
-                    "https://github.com/jdtsmith/eglot-booster.git")))
+		    "https://github.com/jdtsmith/eglot-booster.git")))
+ '(safe-local-variable-values
+   '((eval defun hugo/run-server nil (interactive)
+	   (async-shell-command "hugo server -D" "*hugo-server*"))))
  '(user-full-name "Hee-Suk Kim")
  '(user-mail-address "hskimse1@gmail.com"))
 (custom-set-faces
