@@ -290,7 +290,6 @@ Return non-nil if successful, nil otherwise."
       mu4e-update-interval nil
       mu4e-change-filenames-when-moving t) ;; mbsync
 
-;; Contexts
 (setq mu4e-contexts
       (list
        ;; Fastmail
@@ -303,7 +302,7 @@ Return non-nil if successful, nil otherwise."
         :vars '((user-mail-address      . "hskim@dilluti0n.com")
                 (user-full-name         . "Hee-Suk Kim")
                 (mu4e-sent-folder       . "/fastmail/Sent")
-                ;; (mu4e-drafts-folder     . "/fastmail/Drafts")
+                (mu4e-drafts-folder     . "/fastmail/Drafts")
                 (mu4e-trash-folder      . "/fastmail/Trash")
                 (mu4e-refile-folder     . "/fastmail/Archive")
                 (mu4e-sent-messages-behavior . sent)))))
@@ -335,25 +334,26 @@ Return non-nil if successful, nil otherwise."
 (add-to-list 'erc-modules 'sasl 'autojoin)
 (erc-update-modules)
 
-(setq erc-sasl-mechanism 'plain
-      erc-sasl-user "dilluti0n"
-      erc-sasl-password (auth-source-pass-get 'secret "hskim/irc.libera.chat"))
+(defun m/erc ()
+  (interactive)
+  (let ((erc-sasl-mechanism 'plain)
+        (erc-sasl-user "dilluti0n")
+        (erc-sasl-password (auth-source-pass-get 'secret "hskim/irc.libera.chat"))
+        (erc-autojoin-timing 'ident)
+        (erc-autojoin-delay 3)
+        (erc-autojoin-channels-alist '(("#gentoo"
+                                        "#gentoo-guru"
+                                        "#libssh"
+                                        "#bitcoin"
+                                        "#bitcoin-core-dev"
+                                        "#emacs"
+                                        "#plan9"
+                                        "##math"))))
 
-(setq erc-autojoin-timing 'ident
-      erc-autojoin-delay 3
-      erc-autojoin-channels-alist
-      '(("#gentoo"
-         "#gentoo-guru"
-         "#libssh"
-         "#bitcoin"
-         "#bitcoin-core-dev"
-         "#emacs"
-         "#plan9"
-         "##math")))
-
-(erc-tls :server "irc.libera.chat" :port 6697
-         :nick "dilluti0n"
-         :user "dilluti0n")
+      (erc-tls :server "irc.libera.chat" :port 6697
+           :nick "dilluti0n"
+           :user "dilluti0n"))
+  )
 
 ;;
 ;; miscellaneous
