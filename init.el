@@ -383,6 +383,13 @@ Return non-nil if successful, nil otherwise."
 (ensure-require 'which-func)
 (which-function-mode +1)
 
+(with-eval-after-load 'kdl-mode
+    (defun kdl-indent-line-4 () (kdl-indent-line 4)))
+
+(add-hook 'kdl-mode-hook
+          (lambda ()
+            (setq-local indent-line-function #'kdl-indent-line-4)))
+
 ;;
 ;; org-mode
 ;;
