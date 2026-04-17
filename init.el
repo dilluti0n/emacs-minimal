@@ -253,10 +253,9 @@ Return non-nil if successful, nil otherwise."
 		      (cdr args)))))
 
 (ensure-require 'cape)
-(add-to-list 'completion-at-point-functions #'cape-dabbrev)
-(add-to-list 'completion-at-point-functions #'cape-file)
-(setq dabbrev-check-other-buffers t
-      dabbrev-check-all-buffers t)
+(add-hook 'completion-at-point-functions #'cape-dabbrev)
+(add-hook 'completion-at-point-functions #'cape-file)
+(add-hook 'completion-at-point-functions #'cape-elisp-block)
 
 ;;
 ;; completion frontends (vertico, corfu)
@@ -269,8 +268,8 @@ Return non-nil if successful, nil otherwise."
 
 (ensure-require 'corfu)
 (add-hook 'after-init-hook 'global-corfu-mode)
-(setq corfu-auto        t
-      corfu-auto-delay  0.05
+(setq corfu-auto t
+      corfu-auto-delay  0.1
       corfu-auto-prefix 2)
 (global-set-key (kbd "C-'") 'completion-at-point)
 (add-hook 'corfu-mode-hook
@@ -307,6 +306,13 @@ Return non-nil if successful, nil otherwise."
                 (mu4e-refile-folder     . "/fastmail/Archive")
                 (mu4e-sent-messages-behavior . sent)))))
 
+(setq mu4e-context-policy 'pick-first
+      mu4e-compose-context-policy 'pick-first)
+
+(setq mail-user-agent 'mu4e-user-agent
+      message-mail-user-agent 'mu4e-user-agent
+      read-mail-command 'mu4e)
+
 (setq mu4e-bookmarks
       '((:name "unread" :query "flag:unread AND NOT flag:trashed" :key ?u)
         (:name "gentoo-dev" :query "to:gentoo-dev@lists.gentoo.org"  :key ?d)
@@ -325,6 +331,8 @@ Return non-nil if successful, nil otherwise."
       mml-enable-flowed nil
       mml-secure-openpgp-sign-with-sender t)
 
+(add-hook 'message-setup-hook 'mml-secure-message-sign-pgpmime)
+
 ;;
 ;; irc
 ;;
@@ -334,7 +342,7 @@ Return non-nil if successful, nil otherwise."
 (add-to-list 'erc-modules 'sasl 'autojoin)
 (erc-update-modules)
 
-(defun m/erc ()
+(defun start-erc ()
   (interactive)
   (let ((erc-sasl-mechanism 'plain)
         (erc-sasl-user "dilluti0n")
